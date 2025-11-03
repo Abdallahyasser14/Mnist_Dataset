@@ -1,5 +1,6 @@
 import torch
 from torchvision import datasets, transforms
+from utils.split_data import split_train_val_test_tensors
 
 
 def filter_two_classes(X, Y):
@@ -49,6 +50,16 @@ def load_lr_data() :
 
     Y_train_bin = Y_train_bin.unsqueeze(1)
     Y_test_bin  = Y_test_bin.unsqueeze(1)
-    return  X_train_bin, Y_train_bin,X_test_bin,Y_test_bin
+
+    x_all = torch.cat([X_train_bin, X_test_bin], dim=0)
+    y_all = torch.cat([Y_train_bin, Y_test_bin], dim=0)
+
+
+    X_train_bin, X_val_bin, X_test_bin, Y_train_bin, Y_val_bin, Y_test_bin = split_train_val_test_tensors(
+        x_all, y_all, train_size=0.6, val_size=0.2, test_size=0.2, random_state=42
+    )
+    
+
+    return  X_train_bin, Y_train_bin, X_val_bin, Y_val_bin, X_test_bin, Y_test_bin
 
 
